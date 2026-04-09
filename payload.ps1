@@ -1,83 +1,65 @@
-# Fake Hacker Matrix Payload - Visual Only
-# Save as payload.ps1
+# Fake Hacker Simulation Script
+# Totally harmless – just visuals 😎
 
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
+Clear-Host
 
-# Fullscreen black console window
-$Host.UI.RawUI.WindowTitle = "SYSTEM OVERRIDE"
-$Host.UI.RawUI.BackgroundColor = "Black"
-$Host.UI.RawUI.ForegroundColor = "Green"
-cls
-
-# Matrix rain effect
-function Start-MatrixRain {
-    $width = $Host.UI.RawUI.WindowSize.Width
-    $height = $Host.UI.RawUI.WindowSize.Height
-    
-    $drops = @()
-    for($i=0; $i -lt $width; $i++) {
-        $drops += @{x=$i; y=0; speed=(Get-Random -Min 1 -Max 3)}
+function Type-Text($text, $delay = 40) {
+    foreach ($char in $text.ToCharArray()) {
+        Write-Host -NoNewline $char
+        Start-Sleep -Milliseconds $delay
     }
-    
-    while($true) {
-        cls
-        $randChar = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
-        $char = $randChar[(Get-Random -Max $randChar.Length)]
-        
-        foreach($drop in $drops) {
-            if($drop.y -ge $height) {
-                $drop.y = 0
-                $drop.speed = (Get-Random -Min 1 -Max 3)
-            }
-            
-            if((Get-Random -Max 10) -lt 3) {
-                Write-Host (" " * $drop.x + $char) -NoNewline
-            }
-            $drop.y += $drop.speed
-        }
-        Start-Sleep -Milliseconds 50
+    Write-Host ""
+}
+
+function Fake-Progress($activity) {
+    for ($i = 0; $i -le 100; $i += (Get-Random -Minimum 3 -Maximum 10)) {
+        Write-Progress -Activity $activity -Status "$i% Complete" -PercentComplete $i
+        Start-Sleep -Milliseconds (Get-Random -Minimum 80 -Maximum 200)
     }
 }
 
-# Scanning animation
-function Show-Scan {
-    Write-Host "╔══════════════════════════════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║  [SYSTEM BREACH DETECTED]                                    ║" -ForegroundColor Red
-    Write-Host "║  Target: $env:COMPUTERNAME                                  ║" -ForegroundColor Cyan
-    Write-Host "║  User: $env:USERNAME                                        ║" -ForegroundColor Cyan
-    Write-Host "║  IP: $(Get-NetIPAddress | ?{$_.AddressFamily -eq 'IPv4'} | Select -First 1 -Expand IPAddress) ║" -ForegroundColor Yellow
-    Write-Host "╠══════════════════════════════════════════════════════════════╣" -ForegroundColor Green
-    
-    Write-Host "║  ┌─[HACK PHASE 1] ACCESS GRANTED                             ║" -ForegroundColor Green
-    Write-Host "║  │  ✓ Bypassing Firewall... [██████████] 100%               ║" -ForegroundColor Green
+# Intro
+Type-Text "Initializing secure terminal..."
+Start-Sleep 1
+Type-Text "Connecting to remote host 192.168.0.$(Get-Random -Minimum 2 -Maximum 254)..."
+Start-Sleep 1
+
+# Fake login
+Type-Text "Bypassing firewall..."
+Fake-Progress "Firewall Breach"
+
+Type-Text "Injecting payload..."
+Fake-Progress "Payload Injection"
+
+Type-Text "Decrypting secure keys..."
+Fake-Progress "Decryption"
+
+# Random fake data output
+Type-Text "Accessing database..."
+Start-Sleep 1
+
+for ($i=0; $i -lt 10; $i++) {
+    $randomHash = -join ((48..57 + 65..90 + 97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+    Write-Host "[DATA] $randomHash"
+    Start-Sleep -Milliseconds 150
+}
+
+# Final message
+Type-Text "Escalating privileges..."
+Start-Sleep 1
+Type-Text "Root access granted ✔" 20
+
+Write-Host ""
+Write-Host ">>> ACCESS GRANTED <<<" -ForegroundColor Green
+Write-Host "Welcome, operator." -ForegroundColor Cyan
+
+Start-Sleep 2
+
+# Ending effect
+for ($i=5; $i -ge 1; $i--) {
+    Write-Host "Disconnecting in $i..." -ForegroundColor Yellow
     Start-Sleep 1
-    
-    Write-Host "║  ├─[HACK PHASE 2] Privilege Escalation                      ║" -ForegroundColor Green
-    Write-Host "║  │  ✓ Root Access...   [██████████] 100%                    ║" -ForegroundColor Green
-    Start-Sleep 1
-    
-    Write-Host "║  └─[HACK PHASE 3] DATA EXTRACTION                           ║" -ForegroundColor Green
-    Write-Host "║     ✓ Files: 1,247,893 extracted                           ║" -ForegroundColor Red
-    Write-Host "║     ✓ Passwords: 2,847 captured                            ║" -ForegroundColor Red
-    Write-Host "║     ✓ Bitcoin Wallets: ฿0.847 drained                       ║" -ForegroundColor Red
-    Write-Host "╚══════════════════════════════════════════════════════════════╝" -ForegroundColor Green
-    
-    Start-Sleep 3
 }
 
-# Glitch effect
-function GlitchScreen {
-    for($i=0; $i -lt 20; $i++) {
-        $colors = @("Red", "Yellow", "Cyan", "Magenta", "White")
-        $Host.UI.RawUI.ForegroundColor = $colors[(Get-Random -Max 5)]
-        Write-Host "ERROR 0xDEADBEEF: SYSTEM COMPROMISED" -NoNewline
-        Start-Sleep -Milliseconds 100
-        cls
-    }
-}
-
-# Main sequence
-Show-Scan
-GlitchScreen
-Start-MatrixRain
+Clear-Host
+Write-Host "Session terminated." -ForegroundColor Red
